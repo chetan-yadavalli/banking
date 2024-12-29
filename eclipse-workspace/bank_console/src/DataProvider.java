@@ -30,7 +30,6 @@ public class DataProvider {
 		   DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 		   String formattedDateTime = now.format(formatter);
 		   long number = Long.parseLong(formattedDateTime);
-		   
             writer.write(number+","+text);
             writer.newLine(); 
         	return true;
