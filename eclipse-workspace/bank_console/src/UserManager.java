@@ -37,12 +37,16 @@ public class UserManager {
 	{
 		 dataProvider.ShowAllUsers();
 	}
-	public Long showBalance(Long accountNumber)
+	public double showBalance(Long accountNumber)
 	{
 		 return dataProvider.showBalance(accountNumber);
 	}
-	public Long depositMoney(Long accountNumber,Long amount)
+	public double depositMoney(Long accountNumber,double amount)
 	{
 		 return dataProvider.depositMoney(accountNumber,amount);
+	}
+	public Double withDrawMoney(Long accountNumber, double amountToWithdraw) {
+		 
+		 return dataProvider.withDrawMoney(accountNumber,amountToWithdraw);
 	}
 }

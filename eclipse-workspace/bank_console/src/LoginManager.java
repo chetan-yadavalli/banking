@@ -36,18 +36,34 @@ public class LoginManager {
      	            switch(number)
      	            {
      		            case 1: // check for balance
-       	            		  Long balance = userMgr.showBalance(accountNumber);
+       	            		  double balance = userMgr.showBalance(accountNumber);
        	            		  System.out.println("Your account "+ accountNumber + ", balance: " + balance);
        	            		   break;
      		            case 2: //deposit money
      		            		System.out.println("Enter amount to deposit");
-     		            		Long amount = Long.parseLong(inScan.nextLine());
+     		            		double amount = Double.parseDouble(inScan.nextLine());
+     		            		if(amount < 0)
+     		            		{
+     		            			System.out.println("Deposit amount should be greater than 0");
+     		            			break;
+     		            		}
+     		            		
      		            		System.out.println("You entered amount: " + amount);
-     		            		Long newBalance = userMgr.depositMoney(accountNumber, amount);
+     		            		Double newBalance = userMgr.depositMoney(accountNumber, amount);
      		            		System.out.println("Total balance after deposit: " + newBalance);
      		            		break;
      		            case 3: //withdraw money
-		            		 
+	     		            	System.out.println("Enter amount to withdraw from ATM");
+	     		            	double amountToWithdraw = Double.parseDouble(inScan.nextLine());
+	     		            	if(amountToWithdraw < 0)
+	 		            		{
+	 		            			System.out.println("Withdraw amount should be greater than 0");
+	 		            			break;
+	 		            		}
+	     		            	System.out.println("You entered amount: " + amountToWithdraw);
+	     		            	Double newBalanceAfter = userMgr.withDrawMoney(accountNumber, amountToWithdraw);
+	 		            		System.out.println("Total balance after deposit: " + newBalanceAfter);
+     		            	
 		            		break;
      		            case 4: //Transfer money
 		            		 

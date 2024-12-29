@@ -82,7 +82,7 @@ public class DataProvider {
         }
     }
 	
-	public Long showBalance(Long accountNumber)
+	public Double showBalance(Long accountNumber)
 	{
 		try (Scanner fileScanner = new Scanner(new File("accounts.txt"))) {
             while (fileScanner.hasNextLine()) {
@@ -91,11 +91,37 @@ public class DataProvider {
                 if (parts.length > 0 && parts[0].equals(accountNumber.toString())) {
                 	if(parts.length > 3)
                 	{ 
-                		Long balance = Long.parseLong(parts[3]);
+                		Double balance = Double.parseDouble(parts[3]);
                 		return balance;
                 	}
                 	else
-                		return 0L;
+                		return 0.0;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(ANSI_RED +"Error reading file: " + e.getMessage()+ ANSI_RESET);
+        }
+        return 0.0;
+	}
+	
+	public double depositMoney(Long accountNumber, double amount) {
+		 
+		try (Scanner fileScanner = new Scanner(new File("accounts.txt"))) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                String[] parts = line.split(",");
+                if (parts.length > 0 && parts[0].equals(accountNumber.toString())) {
+                	double balance = 0.0;
+                	if(parts.length > 3)
+                	{ 
+                		balance = Double.parseDouble(parts[3]);
+                	    balance += amount;
+                	}
+                	else
+                		 balance += amount;
+                	 
+                	updateRow("accounts.txt",accountNumber.toString(),3,Double.toString(balance));
+                	return balance;
                 }
             }
         } catch (IOException e) {
@@ -104,29 +130,31 @@ public class DataProvider {
         return 0L;
 	}
 	
-	public Long depositMoney(Long accountNumber, Long amount) {
-		 
+	public Double withDrawMoney(Long accountNumber, double amountToWithdraw) {
 		try (Scanner fileScanner = new Scanner(new File("accounts.txt"))) {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(",");
                 if (parts.length > 0 && parts[0].equals(accountNumber.toString())) {
-                	Long balance = 0L;
+                	double balance = 0.0;
                 	if(parts.length > 3)
                 	{ 
-                		balance = Long.parseLong(parts[3]);
-                	    balance += amount;
+                		balance = Double.parseDouble(parts[3]);
+                		if(balance < amountToWithdraw )
+                		{	 
+                			System.out.println(ANSI_RED +"Your account doesn't have sufficient balance" + ANSI_RESET);
+                			return balance;
+                		}
+                	    balance -= amountToWithdraw;
                 	}
-                	else
-                		 balance += amount;
-                	updateRow("accounts.txt",accountNumber.toString(),3,balance.toString());
+                  	updateRow("accounts.txt",accountNumber.toString(),3,Double.toString(balance));
                 	return balance;
                 }
             }
         } catch (IOException e) {
-            System.out.println(ANSI_RED +"Error reading file: " + e.getMessage()+ ANSI_RESET);
+            System.out.println(ANSI_RED +"Error in retrieval: " + e.getMessage()+ ANSI_RESET);
         }
-        return 0L;
+        return 0.0;
 	}
 	
 	 private static boolean usernameExists(String username) {
@@ -170,4 +198,5 @@ public class DataProvider {
             e.printStackTrace();
         }
     }
+	
 }
