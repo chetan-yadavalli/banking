@@ -29,17 +29,20 @@ public class UserManager {
         	System.out.println("Failed to create New sername:" + username);
         }
 	}
-	public boolean validateUser(String username, String password)
+	public Long validateUser(String username, String password)
 	{
-		 if(dataProvider.isValidUser(username, password))
-		 {
-			 return true;
-		 }
-		 return false;
+		return dataProvider.isValidUser(username, password);
 	}
 	public void ShowAllUsers()
 	{
 		 dataProvider.ShowAllUsers();
 	}
-	
+	public Long showBalance(Long accountNumber)
+	{
+		 return dataProvider.showBalance(accountNumber);
+	}
+	public Long depositMoney(Long accountNumber,Long amount)
+	{
+		 return dataProvider.depositMoney(accountNumber,amount);
+	}
 }

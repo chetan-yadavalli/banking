@@ -17,7 +17,8 @@ public class LoginManager {
 		String password = in.nextLine();
         System.out.println("You entered username: " + username);
         System.out.println("You entered password: " + password);
-        if(userMgr.validateUser(username, password))
+        Long accountNumber = 0L;
+        if((accountNumber = userMgr.validateUser(username, password))>0)
         {
         	System.out.println("Successfully logged in as " + username);
         	userName = username;
@@ -28,17 +29,22 @@ public class LoginManager {
                  {
              	
                   try {
-                	  Scanner inScan = new Scanner(System.in);  
+                	 Scanner inScan = new Scanner(System.in);  
      	             String input = inScan.nextLine();
      	             System.out.println("You entered: " + input);
      	             number = Integer.parseInt(input);
      	            switch(number)
      	            {
      		            case 1: // check for balance
-       	            		    
+       	            		  Long balance = userMgr.showBalance(accountNumber);
+       	            		  System.out.println("Your account "+ accountNumber + ", balance: " + balance);
        	            		   break;
      		            case 2: //deposit money
-     		            		 
+     		            		System.out.println("Enter amount to deposit");
+     		            		Long amount = Long.parseLong(inScan.nextLine());
+     		            		System.out.println("You entered amount: " + amount);
+     		            		Long newBalance = userMgr.depositMoney(accountNumber, amount);
+     		            		System.out.println("Total balance after deposit: " + newBalance);
      		            		break;
      		            case 3: //withdraw money
 		            		 

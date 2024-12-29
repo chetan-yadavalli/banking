@@ -13,6 +13,10 @@ import java.time.format.DateTimeFormatter;
 
 public class DataProvider {
 
+	public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_GREEN = "\u001B[32m";
+    
 	public DataProvider() {
 		 // hello testing
 	}
@@ -30,7 +34,7 @@ public class DataProvider {
 		   DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 		   String formattedDateTime = now.format(formatter);
 		   long number = Long.parseLong(formattedDateTime);
-            writer.write(number+","+text);
+            writer.write(number+","+text +",0");
             writer.newLine(); 
         	return true;
         } catch (IOException e) {
@@ -47,19 +51,20 @@ public class DataProvider {
 	{
 		return usernameExists(username);
 	}
-	public  boolean isValidUser(String username,String password) {
+	public  Long isValidUser(String username,String password) {
         try (Scanner fileScanner = new Scanner(new File("accounts.txt"))) {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(",");
                 if (parts[1].equals(username) && parts[2].equals(password)) {
-                    return true;
+                	Long accountNumber = Long.parseLong(parts[0]);
+                	return accountNumber;
                 }
             }
         } catch (IOException e) {
-            System.out.println("Error reading file: " + e.getMessage());
+            System.out.println(ANSI_RED + "Error reading file: " + e.getMessage() + ANSI_RESET);
         }
-        return false;
+        return 0L;
     }
 	
 	public  void ShowAllUsers() {
@@ -67,13 +72,62 @@ public class DataProvider {
             while (fileScanner.hasNextLine()) {
                 String line = fileScanner.nextLine();
                 String[] parts = line.split(",");
-                System.out.println("Account Number:"+ parts[0]+ ", Username:" + parts[1] +", Password:" +parts[2] );
+                System.out.println(ANSI_GREEN + "Account Number:"+ parts[0]+ ", Username:" + parts[1] 
+                		+", Password:" +parts[2] 
+                		+", Balance:" +parts[3] +ANSI_RESET);
                 
             }
         } catch (IOException e) {
-            System.out.println("Error reading file: " + e.getMessage());
+            System.out.println(ANSI_RED + "Error reading file: " + e.getMessage()+ ANSI_RESET);
         }
     }
+	
+	public Long showBalance(Long accountNumber)
+	{
+		try (Scanner fileScanner = new Scanner(new File("accounts.txt"))) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                String[] parts = line.split(",");
+                if (parts.length > 0 && parts[0].equals(accountNumber.toString())) {
+                	if(parts.length > 3)
+                	{ 
+                		Long balance = Long.parseLong(parts[3]);
+                		return balance;
+                	}
+                	else
+                		return 0L;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(ANSI_RED +"Error reading file: " + e.getMessage()+ ANSI_RESET);
+        }
+        return 0L;
+	}
+	
+	public Long depositMoney(Long accountNumber, Long amount) {
+		 
+		try (Scanner fileScanner = new Scanner(new File("accounts.txt"))) {
+            while (fileScanner.hasNextLine()) {
+                String line = fileScanner.nextLine();
+                String[] parts = line.split(",");
+                if (parts.length > 0 && parts[0].equals(accountNumber.toString())) {
+                	Long balance = 0L;
+                	if(parts.length > 3)
+                	{ 
+                		balance = Long.parseLong(parts[3]);
+                	    balance += amount;
+                	}
+                	else
+                		 balance += amount;
+                	updateRow("accounts.txt",accountNumber.toString(),3,balance.toString());
+                	return balance;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(ANSI_RED +"Error reading file: " + e.getMessage()+ ANSI_RESET);
+        }
+        return 0L;
+	}
 	
 	 private static boolean usernameExists(String username) {
 	        try (Scanner fileScanner = new Scanner(new File("accounts.txt"))) {
@@ -85,7 +139,7 @@ public class DataProvider {
 	                }
 	            }
 	        } catch (IOException e) {
-	            System.out.println("Error reading file: " + e.getMessage());
+	            System.out.println(ANSI_RED +"Error reading file: " + e.getMessage()+ ANSI_RESET);
 	        }
 	        return false;
 	    }
@@ -93,7 +147,6 @@ public class DataProvider {
 	 
 	private static void updateRow(String filePath, String rowToUpdate, int columnToUpdate, String newValue) {
         List<String> lines = new ArrayList<>();
-
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = br.readLine()) != null) {

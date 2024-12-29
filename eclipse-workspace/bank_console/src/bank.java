@@ -9,7 +9,6 @@ class bank
          
         while(number != 7)
             {
-        	
              try {
             	 Scanner in = new Scanner(System.in);  
 	             String input = in.nextLine();
