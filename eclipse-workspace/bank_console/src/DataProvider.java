@@ -157,6 +157,12 @@ public class DataProvider {
         return 0.0;
 	}
 	
+	public Double transferMoney(Long accountNumber, Long toAccountNumber, double amountToSend) {
+			 Double balance =  withDrawMoney(accountNumber,amountToSend);
+			 depositMoney(toAccountNumber,amountToSend);
+			 return balance;
+	}
+	
 	 private static boolean usernameExists(String username) {
 	        try (Scanner fileScanner = new Scanner(new File("accounts.txt"))) {
 	            while (fileScanner.hasNextLine()) {
@@ -198,5 +204,6 @@ public class DataProvider {
             e.printStackTrace();
         }
     }
+	
 	
 }

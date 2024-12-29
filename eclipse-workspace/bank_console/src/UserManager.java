@@ -49,4 +49,8 @@ public class UserManager {
 		 
 		 return dataProvider.withDrawMoney(accountNumber,amountToWithdraw);
 	}
+	public Double transferMoney(Long accountNumber, Long toAccountNumber, double amountToSend) {
+		return dataProvider.transferMoney(accountNumber,toAccountNumber,amountToSend);
+		 
+	}
 }
